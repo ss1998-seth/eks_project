@@ -17,3 +17,35 @@ AWS cli configure with the account with IAM role permission
 IAM authenticator
 kubectl
 eksctl
+
+
+First we have to create the cluster using the following code:
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: lwcluster
+  region: ap-south-1
+
+nodeGroups:
+   - name: ng1
+     desiredCapacity: 2
+     instanceType: t2.micro
+     ssh:
+        publicKeyName: tfkey
+   - name: ng2
+     desiredCapacity: 1
+     instanceType: t2.small
+     ssh:
+        publicKeyName: tfkey
+   - name: ng-mixed
+     minSize: 2
+     maxSize: 5
+     instancesDistribution:
+       maxPrice: 0.017
+       instanceTypes: ["t3.small", "t3.medium"] # At least one instance type should be specified
+       onDemandBaseCapacity: 0
+       onDemandPercentageAboveBaseCapacity: 50
+       spotInstancePools: 2     
+     ssh:
+        publicKeyName: tfkey
